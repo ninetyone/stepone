@@ -12,72 +12,92 @@
  */
 
 public class Percolation {
-	
+
 	private boolean[][] opened;
 	private int top = 0;
 	private int bottom;
 	private int size;
 	private WeightedQuickUnionUF uf;
+	private WeightedQuickUnionUF uf1;
 	
-	public Percolation(int N) {              
-		// create N-by-N grid, with all sites blocked
-		if (N < 1) 
-			throw new IndexOutOfBoundsException("Grid size " + N + " is out of bounds");
+	// create N-by-N grid, with all sites blocked
+	public Percolation(int N) {
+
+		if (N <= 0)
+			throw new IllegalArgumentException();
+
 		size = N;
 		bottom = size * size + 1;
 		uf = new WeightedQuickUnionUF(size * size + 2);
+		uf1 = new WeightedQuickUnionUF(size * size + 2);
 		opened = new boolean[size][size];
 		
 	}
-	   public void open(int i, int j) {         
-		   // open site (row i, column j) if it is not open already
-		   if (i <= 0 || i > size) throw new IndexOutOfBoundsException("row index " + i + " is out of bounds");
-		   if (i <= 0 || i > size) throw new IndexOutOfBoundsException("column index " + j + " is out of bounds");
-		   
-		   if (i == 1) {
-			   uf.union(getIndex(i, j), top);
-		   }
-		   if (i == size) {
-			   uf.union(getIndex(i, j), bottom);
-		   }
-		   if (j > 1 && isOpen(i, j-1)) {
-			   uf.union(getIndex(i, j), getIndex(i, j - 1));
-		   }
-		   if (j < size && isOpen(i, j+1)) {
-			   uf.union(getIndex(i, j), getIndex(i, j + 1));
-		   }
-		   if (i > 1 && isOpen(i - 1, j)) {
-			   uf.union(getIndex(i, j), getIndex(i - 1, j));
-		   }
-		   if (i < size && isOpen(i + 1, j)) {
-			   uf.union(getIndex(i, j), getIndex(i + 1, j));
-		   }
-	   }
-	   
-	   public boolean isOpen(int i, int j) {     
-		   // is site (row i, column j) open?
-		   return opened[i - 1][j - 1];
-	   }
-	   
-	   public boolean isFull(int i, int j) {
-	   // is site (row i, column j) full?
-		   if (i > 0 && i <= size && j > 0 && j <= size) {
-			   return uf.connected(getIndex(i, j), top);
-		   }else {
-			   throw new IndexOutOfBoundsException();
-		   }
-	   }
-	   public boolean percolates() {            
-		   // does the system percolate?
-	   return uf.connected(top, bottom);
-	   }
-	   
-	   private int getIndex(int i, int j) {
-	        return size * (i - 1) + j;
-	    }
 
-	   public static void main(String[] args) {   // test client (optional)
-		   
-	   }
+	// open site (row i, column j) if it is not open already
+	public void open(int i, int j) {
+
+		validate(i, j);
+		opened[i - 1][j - 1] = true;
+		
+		if (i == 1) {
+			uf.union(top, xyTo1D(i, j));
+		}
+		if (i == size) {
+			uf.union(bottom, xyTo1D(i, j));
+		}
+		if (i > 1 && isOpen(i - 1, j)) {
+			uf.union(xyTo1D(i, j), xyTo1D(i - 1, j));
+		}
+		if (i < size && isOpen(i + 1, j)) {
+			uf.union(xyTo1D(i, j), xyTo1D(i + 1, j));
+		}
+		if (j > 1 && isOpen(i, j - 1)) {
+			uf.union(xyTo1D(i, j), xyTo1D(i, j - 1));
+		}
+		if (j < size && isOpen(i, j + 1)) {
+			uf.union(xyTo1D(i, j), xyTo1D(i, j + 1));
+		}
+	}
+
+	public boolean isOpen(int i, int j) { // is site (row i, column j) open?
+
+		validate(i, j);
+		return opened[i - 1][j - 1];
+	}
+
+	public boolean isFull(int i, int j) { // is site (row i, column j) full?
+
+		System.out.println(uf.find(xyTo1D(i, j)));
+		return (uf.connected(top, xyTo1D(i, j)));
+	}
+
+	public boolean percolates() { // does the system percolate?
+		
+		return (uf.connected(top, bottom));
+	}
+
+	private int xyTo1D(int i, int j) {
+
+		return (size * (i - 1) + j);
+	}
+
+	// validate the input and check if it's out of bound
+	private void validate(int i, int j) {
+
+		if (i < 1 || i > size)
+			throw new ArrayIndexOutOfBoundsException("row index " + i
+					+ " out of bounds");
+		if (j < 1 || j > size)
+			throw new ArrayIndexOutOfBoundsException("column index " + j
+					+ " out of bounds");
+	}
+/*
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		D:\Learning\Algorithms\Part 1\percolation\input6.txt
+		
+	}
+*/
 
 }
