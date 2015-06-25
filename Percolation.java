@@ -1,17 +1,14 @@
 /*------------------------------------------------------
  *  Author:        Akshay Goyal
- *  Written:       5/3/2015
- *  Last updated:  8/7/2006
+ *  Written:       6/24/2015
+ *  Last updated:  6/25/2015
  *
- *  Compilation:   javac HelloWorld.java
- *  Execution:     java HelloWorld
+ *  Compilation:   javac Percolation.java
+ *  Execution:     java Percolation
  *  
- *  Prints "Hello, World". By tradition, this is everyone's
- *  first program.
- *
- *  % java HelloWorld
- *  Hello, World
- * 
+ *  Estimates the probabbilty p, above the the system almost always percolates and 
+ *  below wich the system almost never percolates.
+ *   
  */
 
 public class Percolation {
