@@ -29,9 +29,8 @@ public class Percolation {
 		size = N;
 		bottom = size * size + 1;
 		uf = new WeightedQuickUnionUF(size * size + 2);
-		uf1 = new WeightedQuickUnionUF(size * size + 2);
-		opened = new boolean[size][size];
-		
+		uf1 = new WeightedQuickUnionUF(size * size + 1);
+		opened = new boolean[size][size];		
 	}
 
 	// open site (row i, column j) if it is not open already
@@ -42,21 +41,26 @@ public class Percolation {
 		
 		if (i == 1) {
 			uf.union(top, xyTo1D(i, j));
+			uf1.union(top, xyTo1D(i, j));
 		}
 		if (i == size) {
 			uf.union(bottom, xyTo1D(i, j));
 		}
 		if (i > 1 && isOpen(i - 1, j)) {
 			uf.union(xyTo1D(i, j), xyTo1D(i - 1, j));
+			uf1.union(xyTo1D(i, j), xyTo1D(i - 1, j));
 		}
 		if (i < size && isOpen(i + 1, j)) {
 			uf.union(xyTo1D(i, j), xyTo1D(i + 1, j));
+			uf1.union(xyTo1D(i, j), xyTo1D(i + 1, j));
 		}
 		if (j > 1 && isOpen(i, j - 1)) {
 			uf.union(xyTo1D(i, j), xyTo1D(i, j - 1));
+			uf1.union(xyTo1D(i, j), xyTo1D(i, j - 1));
 		}
 		if (j < size && isOpen(i, j + 1)) {
 			uf.union(xyTo1D(i, j), xyTo1D(i, j + 1));
+			uf1.union(xyTo1D(i, j), xyTo1D(i, j + 1));
 		}
 	}
 
@@ -68,8 +72,7 @@ public class Percolation {
 
 	public boolean isFull(int i, int j) { // is site (row i, column j) full?
 
-		System.out.println(uf.find(xyTo1D(i, j)));
-		return (uf.connected(top, xyTo1D(i, j)));
+		return (uf1.connected(top, xyTo1D(i, j)));
 	}
 
 	public boolean percolates() { // does the system percolate?
