@@ -4,23 +4,23 @@
  *  Last updated:  6/25/2015
  *
  *  Compilation:   javac Percolation.java
- *  Execution:     java Percolation
- *  
- *  Estimates the probabbilty p, above the the system almost always percolates and 
- *  below wich the system almost never percolates.
- *   
+ *
+ *  This class checks if the grid of size N, percolates.
  */
 
 public class Percolation {
 
-	private boolean[][] opened;
-	private int top = 0;
-	private int bottom;
-	private int size;
-	private WeightedQuickUnionUF uf;
-	private WeightedQuickUnionUF uf1;
+	private boolean[][] opened;			//contains the opened status of all elements 
+	private int top = 0;				//virtual top
+	private int bottom;					//virtual bottom
+	private int size;					//size of the grid
+	private WeightedQuickUnionUF uf;	//WeightedQuickUnionUF checks percolation
+	private WeightedQuickUnionUF uf1;	//WeightedQuickUnionUF used in checking isFull(), to avoid backwash
 	
-	// create N-by-N grid, with all sites blocked
+	/** create N-by-N grid, with all sites blocked
+	 * 
+	 * @param N size of the grid
+	 */
 	public Percolation(int N) {
 
 		if (N <= 0)
@@ -33,7 +33,11 @@ public class Percolation {
 		opened = new boolean[size][size];		
 	}
 
-	// open site (row i, column j) if it is not open already
+	/** open site (row i, column j) if it is not open already
+	 * 
+	 * @param i		row
+	 * @param j		column
+	 */
 	public void open(int i, int j) {
 
 		validate(i, j);
@@ -63,29 +67,55 @@ public class Percolation {
 			uf1.union(xyTo1D(i, j), xyTo1D(i, j + 1));
 		}
 	}
-
+	
+	/** checks if the site is open
+	 * 
+	 * @param i 	row
+	 * @param j		column
+	 * @return	true if site is open else false
+	 */
 	public boolean isOpen(int i, int j) { // is site (row i, column j) open?
 
 		validate(i, j);
 		return opened[i - 1][j - 1];
 	}
-
+	
+	/** checks if the site is full (connected to top)
+	 * 
+	 * @param i 	row
+	 * @param j		column
+	 * @return	true if site is full else false
+	 */
 	public boolean isFull(int i, int j) { // is site (row i, column j) full?
 
 		return (uf1.connected(top, xyTo1D(i, j)));
 	}
-
+	
+	/** checks if the system percolates
+	 * 
+	 * @return true if percolates else false
+	 */
 	public boolean percolates() { // does the system percolate?
 		
 		return (uf.connected(top, bottom));
 	}
-
+	
+	/** converts 2D coordinates into 1D 
+	 * 
+	 * @param i		row
+	 * @param j		column
+	 * @return	the 1D coordinate
+	 */
 	private int xyTo1D(int i, int j) {
 
 		return (size * (i - 1) + j);
 	}
 
-	// validate the input and check if it's out of bound
+	/** validate the input and check if it's out of bound
+	 * 
+	 * @param i		row
+	 * @param j		column
+	 */
 	private void validate(int i, int j) {
 
 		if (i < 1 || i > size)
@@ -95,12 +125,5 @@ public class Percolation {
 			throw new ArrayIndexOutOfBoundsException("column index " + j
 					+ " out of bounds");
 	}
-/*
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		D:\Learning\Algorithms\Part 1\percolation\input6.txt
-		
-	}
-*/
 
 }
