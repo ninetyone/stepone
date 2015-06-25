@@ -87,7 +87,8 @@ public class Percolation {
 	 * @return	true if site is full else false
 	 */
 	public boolean isFull(int i, int j) { // is site (row i, column j) full?
-
+		
+		validate(i, j);
 		return (uf1.connected(top, xyTo1D(i, j)));
 	}
 	
