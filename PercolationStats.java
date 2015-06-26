@@ -13,11 +13,9 @@
 
 public class PercolationStats {
 
-	private int size;				//size of array
 	private int times;				// total number of computations
 	private double fraction[];		//array having fraction values of each computation
-	private Percolation p;			//object of Percolation
-
+	
 	
 	/** perform T independent experiments on an N-by-N grid
 	 * 
@@ -29,22 +27,21 @@ public class PercolationStats {
 		if (N < 1 || T < 1)
 			throw new IllegalArgumentException("Use values graeter than 0");
 		
-		size = N;
 		times = T;
 		fraction = new double[times];
 		
 		for (int t = 0; t < times; t++) {
-			p = new Percolation(size);
+			Percolation p = new Percolation(N);
 			int openedSites = 0;
 			while (!p.percolates()) {
-				int i = StdRandom.uniform(1, size + 1);
-				int j = StdRandom.uniform(1, size + 1);
+				int i = StdRandom.uniform(1, N + 1);
+				int j = StdRandom.uniform(1, N + 1);
 				if (!p.isOpen(i, j)) {
 					p.open(i, j);
 					++openedSites;
 				}
 			}
-			fraction[t] = (double) openedSites / (size * size);
+			fraction[t] = (double) openedSites / (N * N);
 		}
 	}
 
