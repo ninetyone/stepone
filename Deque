@@ -1,0 +1,155 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import javax.jws.soap.SOAPBinding.Use;
+
+public class Deque<Item> implements Iterable<Item> {
+
+	int size;
+	Node first, last;
+
+	private class Node {
+		Item item;
+		Node next;
+		Node previous;
+	}
+
+	// construct an empty deque
+	public Deque() {
+		first = null;
+		last = null;
+		size = 0;
+	}
+
+	// is the deque empty?
+	public boolean isEmpty() {
+		return (first == null && last == null);
+	}
+
+	// return the number of items on the deque
+	public int size() {
+		return size;
+	}
+
+	// add the item to the front
+	public void addFirst(Item item) {
+		if (item == null) {
+			throw new NullPointerException();
+		}
+
+		boolean isEmpty = isEmpty();
+		Node oldFirst = first;
+		first = new Node();
+		first.item = item;
+		first.previous = null;
+		first.next = oldFirst;
+
+		if (isEmpty) {
+			last = first;
+		} else {
+			oldFirst.previous = first;
+		}
+		size++;
+	}
+
+	// add the item to the end
+	public void addLast(Item item) {
+		if (item == null) {
+			throw new NullPointerException();
+		}
+		boolean isEmpty = isEmpty();
+		Node oldLast = last;
+		last = new Node();
+		last.item = item;
+		last.next = null;
+		last.previous = oldLast;
+		if (isEmpty) {
+			first = last;
+		} else {
+			oldLast.next = last;
+		}
+		size++;
+	}
+
+	// remove and return the item from the front
+	public Item removeFirst() {
+		if (isEmpty()) {
+			throw new NoSuchElementException();
+		}
+		Item item = first.item;
+		if (first.next == null) {
+			first = null;
+			last = null;
+		} else {
+			first = first.next;
+			first.previous = null;
+		}
+		if (first == last) {
+			last = first;
+		}
+		--size;
+		return item;
+	}
+
+	// remove and return the item from the end
+	public Item removeLast() {
+		if (isEmpty()) {
+			throw new NoSuchElementException();
+		}
+		Item item = last.item;
+		if (last.previous == null) {
+			last = null;
+			first = null;
+		} else {
+			last = last.previous;
+			last.next = null;
+		}
+		if (last == first) {
+			first = last;
+		}
+		--size;
+		return item;
+	}
+
+	// return an iterator over items in order from front to end
+	public Iterator<Item> iterator() {
+		return new ListIterator();
+	}
+
+	private class ListIterator<Item> implements Iterator<Item> {
+
+		private Node current = first;
+
+		public boolean hasNext() {
+			return (current.next != null);
+		}
+
+		public Item next() {
+			if (!hasNext())
+				throw new NoSuchElementException();
+			Item item = (Item) current.item;
+			current = current.next;
+			return item;
+		}
+		
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	// unit testing
+	public static void main(String[] args) {
+		Deque<String> q = new Deque<String>();
+		for (int i = 0; i < 10; ++i) {
+			if (i % 2 == 0) {
+				q.addLast(String.valueOf(i));
+			} else if (i % 3 == 0) {
+				q.removeLast();
+			}
+		}
+		Iterator<String> iter = q.iterator();
+		while (iter.hasNext()) {
+			StdOut.println(iter.next());
+		}
+	}
+}
