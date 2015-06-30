@@ -1,8 +1,6 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.jws.soap.SOAPBinding.Use;
-
 public class Deque<Item> implements Iterable<Item> {
 
 	int size;
@@ -49,7 +47,7 @@ public class Deque<Item> implements Iterable<Item> {
 		} else {
 			oldFirst.previous = first;
 		}
-		size++;
+		++size;
 	}
 
 	// add the item to the end
@@ -68,7 +66,7 @@ public class Deque<Item> implements Iterable<Item> {
 		} else {
 			oldLast.next = last;
 		}
-		size++;
+		++size;
 	}
 
 	// remove and return the item from the front
@@ -116,7 +114,7 @@ public class Deque<Item> implements Iterable<Item> {
 		return new ListIterator();
 	}
 
-	private class ListIterator<Item> implements Iterator<Item> {
+	private class ListIterator implements Iterator<Item> {
 
 		private Node current = first;
 
@@ -127,11 +125,11 @@ public class Deque<Item> implements Iterable<Item> {
 		public Item next() {
 			if (!hasNext())
 				throw new NoSuchElementException();
-			Item item = (Item) current.item;
+			Item item = current.item;
 			current = current.next;
 			return item;
 		}
-		
+
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
@@ -147,9 +145,8 @@ public class Deque<Item> implements Iterable<Item> {
 				q.removeLast();
 			}
 		}
-		Iterator<String> iter = q.iterator();
-		while (iter.hasNext()) {
-			StdOut.println(iter.next());
+		for (String s : q) {
+			System.out.println(s);
 		}
 	}
 }
