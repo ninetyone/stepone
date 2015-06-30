@@ -1,0 +1,124 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+public class RandomizedQueue<Item> implements Iterable<Item> {
+
+	Item[] arr;
+	int size;
+	int capacity;
+
+	// construct an empty randomized queue
+	public RandomizedQueue() {
+		capacity = 1;
+		arr = (Item[]) new Object[capacity];
+		size = 0;
+	}
+
+	// is the queue empty?
+	public boolean isEmpty() {
+		return (size == 0);
+	}
+
+	// return the number of items on the queue
+	public int size() {
+		return size;
+	}
+
+	// add the item
+	public void enqueue(Item item) {
+		if (item == null) {
+			throw new NullPointerException();
+		}
+		if (capacity == size) {
+			resize(capacity * 2);
+		}
+		arr[size] = item;
+		size++;
+
+	}
+
+	// remove and return a random item
+	public Item dequeue() {
+		if (isEmpty()) {
+			throw new NoSuchElementException();
+		}
+		if (arr.length == capacity / 4) {
+			resize(capacity / 2);
+		}
+		int index = StdRandom.uniform(size);
+		Item item = arr[index];
+		arr[index] = arr[--size];
+		arr[size] = null;
+		return (item);
+	}
+
+	// return (but do not remove) a random item
+	public Item sample() {
+		if (isEmpty()) {
+			throw new NoSuchElementException();
+		}
+		return arr[StdRandom.uniform(size)];
+	}
+
+	private void resize(int newCapacity) {
+		capacity = newCapacity;
+		Item[] arr1 = (Item[]) new Object[capacity];
+		for (int i = 0; i < size; i++) {
+			arr1[i] = arr[i];
+		}
+		arr = arr1;
+	}
+
+	// return an independent iterator over items in random order
+	public Iterator<Item> iterator() {
+		return new RandomIterator();
+	}
+
+	private class RandomIterator implements Iterator<Item> {
+		private int current = 0;
+		private int[] shuffledIndexes = new int[size];
+
+		public RandomIterator() {
+			for (int i = 0; i < size; i++)
+				shuffledIndexes[i] = i;
+			StdRandom.shuffle(shuffledIndexes);
+		}
+
+		public boolean hasNext() {
+			return (current < size);
+		}
+
+		public Item next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			return (arr[shuffledIndexes[current++]]);
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
+
+	// unit testing
+	public static void main(String[] args) {
+
+		RandomizedQueue<Integer> randomQueue = new RandomizedQueue<Integer>();
+
+		randomQueue.enqueue(Integer.valueOf(1));
+		randomQueue.enqueue(Integer.valueOf(2));
+		randomQueue.enqueue(Integer.valueOf(3));
+		randomQueue.enqueue(Integer.valueOf(4));
+		randomQueue.enqueue(Integer.valueOf(5));
+		randomQueue.enqueue(Integer.valueOf(6));
+		randomQueue.enqueue(Integer.valueOf(7));
+		randomQueue.enqueue(Integer.valueOf(8));
+		randomQueue.enqueue(Integer.valueOf(9));
+		randomQueue.enqueue(Integer.valueOf(10));
+		randomQueue.enqueue(Integer.valueOf(11));
+
+		for (Integer x : randomQueue) {
+			StdOut.println(x);
+		}
+	}
+}
